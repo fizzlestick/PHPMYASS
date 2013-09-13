@@ -3,9 +3,10 @@
      _/_/_/  _/_/_/_/  _/_/_/  _/  _/ _/   _/    _/_/_/ _/    _/_/     _/_/
     _/      _/    _/  _/      _/     _/   _/    _/     _/        _/       _/
    _/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/
-
  v0.5
- PHPMYASS | A LESSON IN SERVER MISCONFIGURATION | FIZZLE STICK (Professor)
+ PHPMYASS
+ A LESSON IN SERVER MISCONFIGURATION
+ FIZZLE STICK (Professor)
  TESTED AGAINST: WINDOWS W/ UWAMP, XAMPP
  workFLOW: discover, inject, validate, report.....  
  "what does this do?"....
