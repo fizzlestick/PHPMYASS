@@ -20,6 +20,7 @@
 > currently the result is an upload shell.
 
 CHANGELOG
+- v0.51 - 9/15/2013 - Complete re-write to improve everything. Same feature set.
 - v0.5  - Initial public github posting
 
 ISSUES
@@ -27,5 +28,7 @@ ISSUES
 
 TODO
 - I have a couple ideas.. maybe
- - add pre_replace rce vuln
- - add payload generator
+ #1) add PHP meterpreter stuffs
+ #2) add TOR for testing
+ #3) add pre_replace vuln from waraxe (I can't get this to repro currently in xlab, even though I did before. ;(
+ #4) more interaction with target variables such as wwwroot and the like
