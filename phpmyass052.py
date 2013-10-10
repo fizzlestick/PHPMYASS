@@ -7,7 +7,7 @@
 #    _/      _/     /  _/      _/     _/   _/    _/     _/        _/       _/
 #   _/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/
 #
-# v0.52 WIP
+# v0.53 WIP
 # PHPMYASS | A LESSON IN SERVER MISCONFIGURATION | FIZZLE STICK (Professor)
 # TESTED AGAINST: WINDOWS W/ UWAMP, XAMPP
 # workFLOW: discover, inject, validate, report.....
@@ -38,19 +38,95 @@ conf.verb=0
 # CREATE OUR BROWSER
 br = mechanize.Browser()
 
-# DEFINE OUR PHPMYADMIN DIRECTORY TARGETS
+# list taken from websploit2.0.4 
 mylist = [
-'/mysql/',
-'/pma/',
-'/PMA/',
 '/phpmyadmin/',
 '/phpMyAdmin/',
+'/phpmyadmin/',
+'/PMA/',
 '/admin/',
 '/dbadmin/',
+'/mysql/',
+'/myadmin/',
+'/phpmyadmin2/',
+'/phpMyAdmin2/',
+'/phpMyAdmin-2/',
+'/php-my-admin/',
+'/phpMyAdmin-2.2.3/',
+'/phpMyAdmin-2.2.6/',
+'/phpMyAdmin-2.5.1/',
+'/phpMyAdmin-2.5.4/',
+'/phpMyAdmin-2.5.5-rc1/',
+'/phpMyAdmin-2.5.5-rc2/',
+'/phpMyAdmin-2.5.5/',
+'/phpMyAdmin-2.5.5-pl1/',
+'/phpMyAdmin-2.5.6-rc1/',
+'/phpMyAdmin-2.5.6-rc2/',
+'/phpMyAdmin-2.5.6/',
+'/phpMyAdmin-2.5.7/',
+'/phpMyAdmin-2.5.7-pl1/',
+'/phpMyAdmin-2.6.0-alpha/',
+'/phpMyAdmin-2.6.0-alpha2/',
+'/phpMyAdmin-2.6.0-beta1/',
+'/phpMyAdmin-2.6.0-beta2/',
+'/phpMyAdmin-2.6.0-rc1/',
+'/phpMyAdmin-2.6.0-rc2/',
+'/phpMyAdmin-2.6.0-rc3/',
+'/phpMyAdmin-2.6.0/',
+'/phpMyAdmin-2.6.0-pl1/',
+'/phpMyAdmin-2.6.0-pl2/',
+'/phpMyAdmin-2.6.0-pl3/',
+'/phpMyAdmin-2.6.1-rc1/',
+'/phpMyAdmin-2.6.1-rc2/',
+'/phpMyAdmin-2.6.1/',
+'/phpMyAdmin-2.6.1-pl1/',
+'/phpMyAdmin-2.6.1-pl2/',
+'/phpMyAdmin-2.6.1-pl3/',
+'/phpMyAdmin-2.6.2-rc1/',
+'/phpMyAdmin-2.6.2-beta1/',
+'/phpMyAdmin-2.6.2-rc1/',
+'/phpMyAdmin-2.6.2/',
+'/phpMyAdmin-2.6.2-pl1/',
+'/phpMyAdmin-2.6.3/',
+'/phpMyAdmin-2.6.3-rc1/',
+'/phpMyAdmin-2.6.3/',
+'/phpMyAdmin-2.6.3-pl1/',
+'/phpMyAdmin-2.6.4-rc1/',
+'/phpMyAdmin-2.6.4-pl1/',
+'/phpMyAdmin-2.6.4-pl2/',
+'/phpMyAdmin-2.6.4-pl3/',
+'/phpMyAdmin-2.6.4-pl4/',
+'/phpMyAdmin-2.6.4/',
+'/phpMyAdmin-2.7.0-beta1/',
+'/phpMyAdmin-2.7.0-rc1/',
+'/phpMyAdmin-2.7.0-pl1/',
+'/phpMyAdmin-2.7.0-pl2/',
+'/phpMyAdmin-2.7.0/',
+'/phpMyAdmin-2.8.0-beta1/',
+'/phpMyAdmin-2.8.0-rc1/',
+'/phpMyAdmin-2.8.0-rc2/',
+'/phpMyAdmin-2.8.0/',
+'/phpMyAdmin-2.8.0.1/',
+'/phpMyAdmin-2.8.0.2/',
+'/phpMyAdmin-2.8.0.3/',
+'/phpMyAdmin-2.8.0.4/',
+'/phpMyAdmin-2.8.1-rc1/',
+'/phpMyAdmin-2.8.1/',
+'/phpMyAdmin-2.8.2/',
 '/sqlmanager/',
-'/sqlweb/'
+'/mysqlmanager/',
+'/p/m/a/',
+'/PMA2005/',
+'/pma2005/',
+'/phpmanager/',
+'/php-myadmin/',
+'/phpmy-admin/',
+'/webadmin/',
+'/sqlweb/',
 '/websql/',
-'/mysqladmin/']
+'/webdb/',
+'/mysqladmin/',
+'/mysql-admin/']
 
 # DEFINE OUR PHPINFO.PHP TARGETS
 mylist2 = [
@@ -89,8 +165,8 @@ def checkroot(host):
     funfun = ''
     for pmadir in mylist:
         try:
-            #openmya = br.open('http://'+host+pmadir+'main.php') # MAIN was required on windows to n
-            openmya = br.open('http://192.168.1.100/phpmyadm1n')
+            openmya = br.open('http://'+host+pmadir+'main.php') # MAIN was required on windows to n
+            #openmya = br.open('http://'+host+pmadir')
             funfun = 'yes'
             print '[PMADIRS:]\t\t[RESULT:] AWESOME! FOUND IT\t\t\t[DECISION:] CONTINUE'
             global thatdir
@@ -195,7 +271,7 @@ print '    _/_/_/_/_/    _/  _/_/_/  _/     _/ _/    _/ _/_/_/_/ _/_/_/_/ _/_/_/
 print '   _/    _/ _/   _/  _/    _/_/_/ _/_/  _/ _/  _/     _/  _/       _/'
 print '  _/_/_/  _/_/_/_/  _/_/_/  _/  _/ _/   _/    _/_/_/ _/    _/_/     _/_/'
 print ' _/      _/    _/  _/      _/     _/   _/    _/     _/        _/       _/'
-print '_/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/ v0.52 WIP'
+print '_/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/ v0.53 WIP'
 print '==============================================================================='
 host = raw_input('[TARGET>>] ')
 print '[*] GOING FULL RETARD WIP MODE ;D '
