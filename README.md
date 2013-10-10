@@ -1,4 +1,4 @@
-[PHPMYASS [v0.52] "all your dumnb ass auth=config bases are belong to PHPMYASS]
+[PHPMYASS [v0.53] "all your dumnb ass auth=config bases are belong to PHPMYASS]
 
          _/_/_/_/_/    _/  _/_/_/  _/     _/ _/    _/ _/_/_/_/ _/_/_/_/ _/_/_/_/
         _/    _/ _/   _/  _/    _/_/_/ _/_/  _/ _/  _/     _/  _/       _/
@@ -20,7 +20,7 @@
 > The current version has added PHP METERPRETER delivery as part of function.
 
 CHANGELOG
-- v0.52 - 10/10/2013 - Fixed a typo / Added an extensive phpma list from websploit
+- v0.53 - 10/10/2013 - Fixed a typo / Added an extensive phpma list from websploit
 - v0.52 - 10/02/2013 - Added PHP meterpreter upload function, tested against WIN/NIX.
 - v0.51 - 09/15/2013 - Complete re-write to improve everything. Same feature set.
 - v0.5  - Initial public github posting
