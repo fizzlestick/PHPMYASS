@@ -30,7 +30,8 @@ ISSUES
 
 TODO
 - I have a couple ideas.. maybe
- #1) add PHP meterpreter stuffs (mostly done)
- #2) add TOR for testing (experimental, remove comments)
- #3) add pre_replace vuln from waraxe (I can't get this to repro currently in xlab, even though I did before. ;(
- #4) more interaction with target variables such as wwwroot and the like (better phpinfo.php honing)
+ ) Find a uniform directory for UNIX/WINDOWS/ANDROID concerning phpmyadmin root
+ ) add PHP meterpreter stuffs (mostly done)
+ ) add TOR for testing (experimental, remove comments)
+ ) add pre_replace vuln from waraxe (I can't get this to repro currently in xlab, even though I did before. ;(
+ ) more interaction with target variables such as wwwroot and the like (better phpinfo.php honing)
