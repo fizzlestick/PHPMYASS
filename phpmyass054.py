@@ -142,7 +142,7 @@ def checkroot(host):
         try:
             openmya = br.open('http://'+host+pmadir)
             funfun = 'yes'
-            print '[PMADIRS:]\t\t[RESULT:] AWESOME! FOUND IT\t[DECISION:] CONTINUE'
+            print '[PMADIRS:]\t\t[RESULT:] AWESOME! FOUND IT\t\t[DECISION:] CONTINUE'
             global thatdir
             thatdir = pmadir
             disc1 = openmya.read()
